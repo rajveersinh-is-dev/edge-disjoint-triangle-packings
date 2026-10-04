@@ -1,0 +1,9 @@
+n,num_triangulations,max_alpha_weak_dual,f_n_dp,f_n_closed_form,a_n_minus_2,distinct_dual_isomorphism_classes,all_agree
+3,1,1,1,1,1,1,1
+4,2,1,1,1,1,1,1
+5,5,2,2,2,2,1,1
+6,14,3,3,3,3,2,1
+7,42,3,3,3,3,3,1
+8,132,4,4,4,4,6,1
+9,429,5,5,5,5,11,1
+10,1430,5,5,5,5,23,1

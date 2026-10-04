@@ -1,0 +1,6 @@
+n,num_maximal_planar_graphs,max_nu,n_minus_2,nu_values_eulerian,nu_values_non_eulerian,reaches_n_minus_2
+3,1,1,1,1,,1
+4,1,1,2,,1,0
+5,10,2,3,,2,0
+6,195,4,4,4,3,1
+7,5712,4,5,,4,0
