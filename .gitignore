@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+
+# LaTeX intermediates (the compiled PDF is committed on purpose)
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.xdv
+paper/*.toc
