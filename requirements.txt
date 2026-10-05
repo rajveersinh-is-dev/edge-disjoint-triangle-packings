@@ -1,0 +1,6 @@
+__future__
+matplotlib
+networkx
+numpy
+planetri
+scipy
