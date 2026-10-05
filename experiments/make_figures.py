@@ -42,11 +42,24 @@ GREY = "#7F8C8D"
 
 
 def _ring(n: int, r: float = 1.0) -> np.ndarray:
+    """Ring.
+    
+    Args:
+        n:
+        r (float):
+    
+    Returns:
+        The computed result
+    
+    """
     a = 2 * math.pi * np.arange(n) / n
     return np.stack([r * np.cos(a), r * np.sin(a)], axis=1)
 
 
 def fig_convex_packings() -> None:
+    """Fig convex packings.
+    
+    """
     sizes = [9, 12, 15]
     fig, axes = plt.subplots(1, 3, figsize=(11.5, 4.1))
     for ax, n in zip(axes, sizes):
@@ -87,6 +100,9 @@ def fig_convex_packings() -> None:
 
 
 def fig_three_functions() -> None:
+    """Fig three functions.
+    
+    """
     ns = np.arange(3, 121)
     p, q = convex_nu_dp_tables(121)
     f = np.array([p[n] for n in ns], dtype=float)
@@ -115,6 +131,16 @@ def fig_three_functions() -> None:
 
 
 def _families(n: int, rng) -> dict[str, np.ndarray]:
+    """Families.
+    
+    Args:
+        n:
+        rng:
+    
+    Returns:
+        The computed result
+    
+    """
     ang = 2 * math.pi * np.arange(n) / n
     ring = np.stack([np.cos(ang), np.sin(ang)], axis=1)
     out = {"convex": ring}
@@ -140,6 +166,9 @@ def _families(n: int, rng) -> dict[str, np.ndarray]:
 
 
 def fig_configurations() -> None:
+    """Fig configurations.
+    
+    """
     rng = np.random.default_rng(7)
     ns = list(range(4, 13))
     series: dict[str, list[float]] = {}
@@ -210,6 +239,15 @@ def fig_configurations() -> None:
 
 
 def _gp(ps) -> bool:
+    """Gp.
+    
+    Args:
+        ps:
+    
+    Returns:
+        bool: Result of type bool
+    
+    """
     from planetri.geom import orient
 
     n = ps.n
@@ -222,6 +260,9 @@ def _gp(ps) -> bool:
 
 
 def fig_extremal_gap() -> None:
+    """Fig extremal gap.
+    
+    """
     convex6 = [tuple(map(tuple, np.round(_ring(6), 4)))]
     nonconvex = [(-300, -125), (0, 100), (300, -125), (-75, 25), (75, -50), (0, 175)]
 
@@ -254,6 +295,9 @@ def fig_extremal_gap() -> None:
 
 
 def main() -> None:
+    """Entry point — parse arguments and run the main computation.
+    
+    """
     os.makedirs(FIGURES, exist_ok=True)
     os.makedirs(RESULTS, exist_ok=True)
     fig_convex_packings()
