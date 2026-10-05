@@ -16,13 +16,15 @@ conflict graph, solved as a 0/1 integer program with HiGHS through
 
 from __future__ import annotations
 
-import itertools
 from typing import Iterable, Sequence
-
-import numpy as np
-from scipy.optimize import LinearConstraint, Bounds, milp
+import itertools
 
 from .geom import Point, PointSet, segments_cross
+from scipy.optimize import LinearConstraint, Bounds, milp
+import numpy as np
+
+
+
 
 __all__ = [
     "Triangle",
@@ -42,25 +44,66 @@ class Triangle(tuple):
     __slots__ = ()
 
     def __new__(cls, a: int, b: int, c: int):
+        """New.
+        
+        Args:
+            a:
+            b:
+            c:
+        
+        Returns:
+            The computed result
+        
+        """
         return super().__new__(cls, sorted((a, b, c)))
 
     @property
     def a(self) -> int:
+        """A.
+        
+        Returns:
+            The computed result
+        
+        """
         return self[0]
 
     @property
     def b(self) -> int:
+        """B.
+        
+        Returns:
+            The computed result
+        
+        """
         return self[1]
 
     @property
     def c(self) -> int:
+        """C.
+        
+        Returns:
+            The computed result
+        
+        """
         return self[2]
 
     def edges(self) -> tuple[tuple[int, int], ...]:
+        """Edges.
+        
+        Returns:
+            tuple: Result of type tuple
+        
+        """
         a, b, c = self
         return ((a, b), (a, c), (b, c))
 
     def __repr__(self) -> str:  # pragma: no cover - debugging helper
+        """Repr.
+        
+        Returns:
+            The computed result
+        
+        """
         return f"Triangle({self[0]}, {self[1]}, {self[2]})"
 
 
@@ -85,8 +128,8 @@ def conflicting(t1: Triangle, t2: Triangle, pts: Sequence[Point]) -> bool:
 def conflict_pairs(triangles: Sequence[Triangle], pts: Sequence[Point]) -> list[tuple[int, int]]:
     """Index pairs of conflicting triangles (each pair listed once)."""
     out: list[tuple[int, int]] = []
-    for i in range(len(triangles)):
-        ti = triangles[i]
+    for i, item in enumerate(triangles):
+        ti = item
         for j in range(i + 1, len(triangles)):
             if conflicting(ti, triangles[j], pts):
                 out.append((i, j))
