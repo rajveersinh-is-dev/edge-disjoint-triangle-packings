@@ -31,8 +31,9 @@ symmetry both depend only on the number of vertices.
 
 from __future__ import annotations
 
-import functools
 from typing import Iterator, Sequence
+import functools
+
 
 __all__ = [
     "convex_nu_dp",
@@ -116,6 +117,7 @@ def convex_nu_dp_tables(m_max: int) -> tuple[tuple[int, ...], tuple[int, ...]]:
     return tuple(p), tuple(q)
 
 
+@functools.lru_cache(maxsize=None)
 def _build_packing(p, q, m: int, avoid: bool) -> list[tuple[int, int, int]]:
     """Backtrack the recurrence on the sub-polygon ``(v_0, ..., v_m)``.
 
@@ -197,6 +199,7 @@ def enumerate_triangulations(n: int) -> Iterator[frozenset[tuple[int, int]]]:
         yield frozenset()
         return
 
+    @functools.lru_cache(maxsize=None)
     def gen(lo: int, hi: int, acc: frozenset) -> Iterator[frozenset]:
         """Triangulate the sub-polygon with vertices ``lo, lo+1, ..., hi``.
 

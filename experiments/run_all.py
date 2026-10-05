@@ -17,6 +17,7 @@ import subprocess
 import sys
 import time
 
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
@@ -31,6 +32,16 @@ FIGURES = "make_figures"
 
 
 def run(script: str, env_extra: dict | None = None) -> tuple[int, float]:
+    """Worker function for parallel processing.
+    
+    Args:
+        script:
+        env_extra:
+    
+    Returns:
+        tuple: Result of type tuple
+    
+    """
     env = dict(os.environ)
     if env_extra:
         env.update(env_extra)
@@ -41,6 +52,12 @@ def run(script: str, env_extra: dict | None = None) -> tuple[int, float]:
 
 
 def main() -> int:
+    """Entry point — parse arguments and run the main computation.
+    
+    Returns:
+        int: Result of type int
+    
+    """
     quick = "--quick" in sys.argv
     print("=" * 78)
     print("planetri: full reproduction run")

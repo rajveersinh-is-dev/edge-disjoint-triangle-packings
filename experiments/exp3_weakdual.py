@@ -20,8 +20,6 @@ obtained and compare it with the set of all subcubic trees on n-2 vertices
 from __future__ import annotations
 
 import csv
-import itertools
-import json
 import os
 import sys
 
@@ -35,6 +33,7 @@ from planetri.convex import (
     triangulation_triangle_count,
 )
 from planetri.trees import alpha_max_subcubic, alpha_tree, weak_dual
+import functools
 
 RESULTS = os.path.join(os.path.dirname(__file__), "results")
 N_MAX_ENUM = 10
@@ -46,7 +45,15 @@ def all_subcubic_trees(N: int) -> set[tuple[tuple[int, int], ...]]:
     out = set()
     seen_vertices = set()
 
+    @functools.lru_cache(maxsize=None)
     def rec(edges, verts):
+        """Rec.
+        
+        Args:
+            edges:
+            verts (list):
+        
+        """
         if len(verts) == N:
             out.add(tuple(sorted((min(a, b), max(a, b)) for a, b in edges)))
             return
@@ -77,7 +84,15 @@ def canonical(adj: list[list[int]]) -> str:
     seen = set()
     order = []
 
+    @functools.lru_cache(maxsize=None)
     def walk(u, p):
+        """Walk.
+        
+        Args:
+            u:
+            p:
+        
+        """
         seen.add(u)
         order.append(u)
         for w in adj[u]:
@@ -95,7 +110,15 @@ def canonical(adj: list[list[int]]) -> str:
     seen2 = set()
     order2 = []
 
+    @functools.lru_cache(maxsize=None)
     def walk2(u, p):
+        """Walk2.
+        
+        Args:
+            u:
+            p:
+        
+        """
         seen2.add(u)
         order2.append(u)
         for w in adj[u]:
@@ -112,6 +135,12 @@ def canonical(adj: list[list[int]]) -> str:
 
 
 def main() -> int:
+    """Entry point — parse arguments and run the main computation.
+    
+    Returns:
+        The computed result
+    
+    """
     os.makedirs(RESULTS, exist_ok=True)
     rows = []
     failures_l1 = 0
@@ -177,13 +206,23 @@ def main() -> int:
 
     print()
     print("L1 (every 3-cycle is a face) violations :", failures_l1)
-    print("L2 (all subcubic trees are weak duals)  :", "holds for N<=%d" % N_MAX_TREE if l2_ok else "FAILS")
+    print("L2 (all subcubic trees are weak duals)  :", f"holds for N<={N_MAX_TREE}" if l2_ok else "FAILS")
     ok = failures_l1 == 0 and l2_ok and all(r["all_agree"] for r in rows)
     print("OVERALL:", "all checks passed" if ok else "PROBLEM")
     return 0 if ok else 1
 
 
 def _adj_from_edges(N: int, edges) -> list[list[int]]:
+    """Adj from edges.
+    
+    Args:
+        N:
+        edges:
+    
+    Returns:
+        The computed result
+    
+    """
     adj = [[] for _ in range(N)]
     for a, b in edges:
         adj[a].append(b)

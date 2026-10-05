@@ -16,7 +16,6 @@ per n.  Any configuration with nu(P) < floor((2n-3)/3) refutes C1.
 from __future__ import annotations
 
 import csv
-import json
 import math
 import os
 import sys
@@ -36,12 +35,35 @@ N_MAX = 11
 # --------------------------------------------------------------------------- #
 # configuration families
 # --------------------------------------------------------------------------- #
+
+
 def convex_ring(n: int, r: float = 1000.0) -> np.ndarray:
+    """Convex ring.
+    
+    Args:
+        n:
+        r (float):
+    
+    Returns:
+        The computed result
+    
+    """
     ang = 2 * math.pi * np.arange(n) / n
     return np.stack([r * np.cos(ang), r * np.sin(ang)], axis=1)
 
 
 def convex_ring_perturbed(n: int, eps: float, seed: int) -> np.ndarray:
+    """Convex ring perturbed.
+    
+    Args:
+        n:
+        eps:
+        seed:
+    
+    Returns:
+        The computed result
+    
+    """
     rng = np.random.default_rng(seed)
     return convex_ring(n) + eps * rng.normal(size=(n, 2))
 
@@ -68,6 +90,17 @@ def double_chain(n: int, seed: int, gap: float = 0.02) -> np.ndarray:
 
 
 def clustered(n: int, seed: int, k: int = 3) -> np.ndarray:
+    """Clustered.
+    
+    Args:
+        n:
+        seed:
+        k (int):
+    
+    Returns:
+        The computed result
+    
+    """
     rng = np.random.default_rng(seed)
     centres = rng.normal(size=(k, 2)) * 30
     idx = rng.integers(0, k, size=n)
@@ -75,6 +108,16 @@ def clustered(n: int, seed: int, k: int = 3) -> np.ndarray:
 
 
 def grid(n: int, seed: int) -> np.ndarray:
+    """Grid.
+    
+    Args:
+        n:
+        seed:
+    
+    Returns:
+        The computed result
+    
+    """
     r = int(math.ceil(math.sqrt(n)))
     pts = [(i, j) for i in range(r) for j in range(r)][:n]
     return np.array(pts, dtype=float) + 0.137
@@ -87,6 +130,15 @@ def stacked(n: int, seed: int) -> np.ndarray:
     pts = [np.array([0.0, 0.0]), np.array([1000.0, 0.0]), np.array([0.0, 1000.0])]
 
     def faces(pts):
+        """Faces.
+        
+        Args:
+            pts (list):
+        
+        Returns:
+            The computed result
+        
+        """
         from itertools import combinations
 
         out = []
@@ -109,11 +161,32 @@ def stacked(n: int, seed: int) -> np.ndarray:
 
 
 def random_uniform(n: int, seed: int) -> np.ndarray:
+    """Random uniform.
+    
+    Args:
+        n:
+        seed:
+    
+    Returns:
+        The computed result
+    
+    """
     rng = np.random.default_rng(seed)
     return rng.normal(size=(n, 2)) * 1000
 
 
 def almost_collinear(n: int, seed: int, curve: float) -> np.ndarray:
+    """Almost collinear.
+    
+    Args:
+        n:
+        seed:
+        curve:
+    
+    Returns:
+        The computed result
+    
+    """
     xs = np.linspace(0, 1000, n)
     return np.stack([xs, curve * (xs / 1000.0) ** 2], axis=1)
 
@@ -147,6 +220,12 @@ def general_position_ok(ps: PointSet) -> bool:
 
 
 def main() -> int:
+    """Entry point — parse arguments and run the main computation.
+    
+    Returns:
+        int: Result of type int
+    
+    """
     os.makedirs(RESULTS, exist_ok=True)
     rows = []
     violations = []
@@ -195,7 +274,8 @@ def main() -> int:
     print(f"elapsed               : {time.time() - n0:.1f}s")
     if violations:
         print("CONJECTURE C1 REFUTED. counterexamples:")
-        for v in violations[:40]:
+        for v in violations[:
+            40]:
             print("   n=%d family=%s seed=%d  nu=%d < %d" % v)
         return 1
     print("Conjecture C1 survives all tested configurations "

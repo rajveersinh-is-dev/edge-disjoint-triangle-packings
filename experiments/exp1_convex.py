@@ -50,9 +50,9 @@ def max_edge_disjoint_triangles(diagonals, n: int) -> int:
             owners.setdefault(e, []).append(idx)
     conflict = set()
     for _, lst in owners.items():
-        for i in range(len(lst)):
+        for i, item in enumerate(lst):
             for j in range(i + 1, len(lst)):
-                conflict.add((min(lst[i], lst[j]), max(lst[i], lst[j])))
+                conflict.add((min(item, lst[j]), max(item, lst[j])))
     A = np.zeros((len(conflict), m))
     for row, (a, b) in enumerate(sorted(conflict)):
         A[row, a] = 1.0
@@ -63,6 +63,12 @@ def max_edge_disjoint_triangles(diagonals, n: int) -> int:
 
 
 def main() -> None:
+    """Entry point — parse arguments and run the main computation.
+    
+    Returns:
+        int: Result of type int
+    
+    """
     os.makedirs(RESULTS, exist_ok=True)
     dp = convex_nu_dp(400)
 
@@ -113,7 +119,7 @@ def main() -> None:
     print()
     print("DP matches closed form floor((2n-3)/3) for all 3<=n<=30 :",
           all(r["agree"] for r in rows))
-    print("brute force (n<=%d) matches DP                        : %s" % (N_ENUMERATED, not mismatches))
+    print(f"brute force (n<={N_ENUMERATED}) matches DP                        : {...}")
     if mismatches:
         print("MISMATCHES at n =", sorted(set(mismatches)))
         return 1

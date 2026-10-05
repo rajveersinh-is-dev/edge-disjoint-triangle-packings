@@ -23,19 +23,22 @@ Evidence collected:
 from __future__ import annotations
 
 import csv
+import functools
 import itertools
 import os
 import sys
 import time
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
-
-import networkx as nx
-import numpy as np
-from scipy.optimize import Bounds, LinearConstraint, milp
-
 from planetri.geom import PointSet, orient, segments_cross
 from planetri.solver import nu_exact
+from scipy.optimize import Bounds, LinearConstraint, milp
+import networkx as nx
+import numpy as np
+
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+
+
 
 RESULTS = os.path.join(os.path.dirname(__file__), "results")
 # The exhaustive scan of *all* maximal planar graphs is exponential; n = 7
@@ -46,7 +49,19 @@ MAX_ENUM_N = int(os.environ.get("PLANETRI_MAX_ENUM_N", "7"))
 # --------------------------------------------------------------------------- #
 # exact triangle packing on an abstract graph
 # --------------------------------------------------------------------------- #
+
+
 def triangle_list(n: int, edges):
+    """Triangle list.
+    
+    Args:
+        n:
+        edges:
+    
+    Returns:
+        The computed result
+    
+    """
     es = {tuple(sorted(e)) for e in edges}
     return [
         t
@@ -67,9 +82,9 @@ def max_edge_disjoint_triangles_of_graph(n: int, edges):
             owners.setdefault(e, []).append(idx)
     conflict = set()
     for lst in owners.values():
-        for i in range(len(lst)):
+        for i, item in enumerate(lst):
             for j in range(i + 1, len(lst)):
-                conflict.add((min(lst[i], lst[j]), max(lst[i], lst[j])))
+                conflict.add((min(item, lst[j]), max(item, lst[j])))
     A = np.zeros((len(conflict), m))
     for row, (a, b) in enumerate(sorted(conflict)):
         A[row, a] = 1.0
@@ -88,7 +103,18 @@ def partition_edges_into_triangles(n: int, edges):
         {tuple(sorted(x)) for x in ((t[0], t[1]), (t[0], t[2]), (t[1], t[2]))} for t in tris
     ]
 
+    @functools.lru_cache(maxsize=None)
     def cover(rem, used_tris):
+        """Cover.
+        
+        Args:
+            rem:
+            used_tris:
+        
+        Returns:
+            The computed result
+        
+        """
         if not rem:
             return used_tris
         e = min(rem)
@@ -115,12 +141,23 @@ def all_maximal_planar_graphs(n: int):
 
 
 def is_eulerian(G: nx.Graph) -> bool:
+    """Is eulerian.
+    
+    Args:
+        G:
+    
+    Returns:
+        The computed result
+    
+    """
     return all(d % 2 == 0 for _, d in G.degree())
 
 
 # --------------------------------------------------------------------------- #
 # explicit Eulerian constructions
 # --------------------------------------------------------------------------- #
+
+
 def bipyramid_over_even_cycle(k: int) -> nx.Graph:
     """Cycle on 0..k-1 plus two apexes k, k+1 joined to every cycle vertex.
 
@@ -210,9 +247,9 @@ def geometric_check(G: nx.Graph, tris) -> bool:
     pos = nx.planar_layout(G)
     coords = [(round(1000 * pos[v][0], 4), round(1000 * pos[v][1], 4)) for v in sorted(G)]
     ps = PointSet(coords)
-    for i in range(len(tris)):
+    for i, item in enumerate(tris):
         for j in range(i + 1, len(tris)):
-            a, b = tris[i], tris[j]
+            a, b = item, tris[j]
             if len(set(a) & set(b)) >= 2:
                 return False
             for x, y in ((a[0], a[1]), (a[0], a[2]), (a[1], a[2])):
@@ -225,6 +262,15 @@ def geometric_check(G: nx.Graph, tris) -> bool:
 
 
 def general_position(ps: PointSet) -> bool:
+    """General position.
+    
+    Args:
+        ps:
+    
+    Returns:
+        bool: Result of type bool
+    
+    """
     n = ps.n
     for i in range(n):
         for j in range(i + 1, n):
@@ -235,7 +281,15 @@ def general_position(ps: PointSet) -> bool:
 
 
 # --------------------------------------------------------------------------- #
+
+
 def main() -> int:
+    """Entry point — parse arguments and run the main computation.
+    
+    Returns:
+        int: Result of type int
+    
+    """
     os.makedirs(RESULTS, exist_ok=True)
     problems: list[str] = []
 
