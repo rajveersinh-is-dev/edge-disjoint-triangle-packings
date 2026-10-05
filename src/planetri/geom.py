@@ -19,9 +19,11 @@ The predicates provided are exactly the ones the mathematics needs:
 
 from __future__ import annotations
 
+from typing import Iterable, Sequence
 import decimal
 import fractions
-from typing import Iterable, Sequence
+import functools
+
 
 Coord = tuple[int, int]
 
@@ -36,6 +38,7 @@ __all__ = [
 ]
 
 
+@functools.lru_cache(maxsize=None)
 def _to_exact_int(value) -> tuple[int, int]:
     """Return ``value`` as an exact pair ``(numerator, denominator)``.
 
@@ -70,6 +73,16 @@ def _to_exact_int(value) -> tuple[int, int]:
 
 
 def _gcd(a: int, b: int) -> int:
+    """Gcd.
+    
+    Args:
+        a:
+        b:
+    
+    Returns:
+        The computed result
+    
+    """
     while b:
         a, b = b, a % b
     return a
@@ -90,22 +103,56 @@ class Point(tuple):
     __slots__ = ()
 
     def __new__(cls, x, y):
+        """New.
+        
+        Args:
+            x:
+            y:
+        
+        Returns:
+            The computed result
+        
+        """
         rx, dx = _to_exact_int(x)
         ry, dy = _to_exact_int(y)
         return super().__new__(cls, (rx * dy, ry * dx))
 
     @property
     def x(self) -> int:
+        """X.
+        
+        Returns:
+            The computed result
+        
+        """
         return self[0]
 
     @property
     def y(self) -> int:
+        """Y.
+        
+        Returns:
+            The computed result
+        
+        """
         return self[1]
 
     def as_float(self) -> tuple[float, float]:
+        """As float.
+        
+        Returns:
+            tuple: Result of type tuple
+        
+        """
         return (float(self[0]), float(self[1]))
 
     def __repr__(self) -> str:  # pragma: no cover - debugging helper
+        """Repr.
+        
+        Returns:
+            The computed result
+        
+        """
         return f"Point({self[0]}, {self[1]})"
 
 
@@ -157,6 +204,12 @@ class PointSet:
     __slots__ = ("points", "n")
 
     def __init__(self, coords: Iterable[Sequence]):
+        """Init.
+        
+        Args:
+            coords:
+        
+        """
         raw = [(_to_exact_int(c[0]), _to_exact_int(c[1])) for c in coords]
         scale = _common_scale(raw)
         pts = tuple(
@@ -173,15 +226,42 @@ class PointSet:
         self.n = len(self.points)
 
     def __len__(self) -> int:
+        """Len.
+        
+        Returns:
+            The computed result
+        
+        """
         return self.n
 
     def __getitem__(self, i: int) -> Point:
+        """Getitem.
+        
+        Args:
+            i:
+        
+        Returns:
+            The computed result
+        
+        """
         return self.points[i]
 
     def __iter__(self):
+        """Iter.
+        
+        Returns:
+            The computed result
+        
+        """
         return iter(self.points)
 
     def __repr__(self) -> str:  # pragma: no cover - debugging helper
+        """Repr.
+        
+        Returns:
+            The computed result
+        
+        """
         return f"PointSet(n={self.n}, {self.points})"
 
     def crossings(self) -> set[tuple[tuple[int, int], tuple[int, int]]]:
@@ -190,8 +270,8 @@ class PointSet:
         chords = [((i, j), self.points[i], self.points[j])
                   for i in range(n) for j in range(i + 1, n)]
         out: set[tuple[tuple[int, int], tuple[int, int]]] = set()
-        for a in range(len(chords)):
-            (i, j), pi, pj = chords[a]
+        for a, item in enumerate(chords):
+            (i, j), pi, pj = item
             for b in range(a + 1, len(chords)):
                 (k, l), pk, pl = chords[b]
                 if len({i, j, k, l}) < 4:
